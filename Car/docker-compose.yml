@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0.36
+    container_name: my-db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: localspringdb
+      MYSQL_PASSWORD: root
+    ports:
+      - "3307:3306"
+
+  mongo:
+    image: mongo:latest
+    container_name: mongo-container
+    ports:
+      - "27017:27017"
+
+  m-express:  # <-- changed service name
+    image: mongo-express:latest
+    container_name: m-express
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongo
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: admin
+    ports:
+      - "8083:8081"
+
+  app:
+    image: rahul/docker:0.2.0
+    container_name: spring-app
+    ports:
+      - "8081:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/localspringdb?allowPublicKeyRetrieval=true&useSSL=false&autoReconnect=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    depends_on:
+      - db
+      - mongo
