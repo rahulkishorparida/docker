@@ -17,7 +17,7 @@ services:
     ports:
       - "27017:27017"
 
-  m-express:  # <-- changed service name
+  m-express:  
     image: mongo-express:latest
     container_name: m-express
     environment:
